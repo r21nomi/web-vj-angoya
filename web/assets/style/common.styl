@@ -1,0 +1,41 @@
+@require '~@/assets/style/variables.styl'
+
+html
+  font-size 62.5%
+  font-family $font_family_ja
+  //transition all 100ms ease-in-out
+  //opacity 0
+  background-color $bg_color
+
+  // To avoid text flashing when web font was loaded.
+  //&.wf-active
+  //  opacity 1
+
+body
+  font-size: $font_size_14
+  color $black_212121
+
+ul
+  list-style none
+
+a
+  color $anchor_text_color
+  text-decoration underline
+  -webkit-tap-highlight-color $transparent
+  tap-highlight-color $transparent
+
+  &:hover
+    opacity: 0.75
+
+*,
+*:before,
+*:after
+  box-sizing border-box
+  padding 0
+  margin 0
+
+.page-enter
+  opacity 0
+
+.page-enter-active
+  transition opacity 0.5s

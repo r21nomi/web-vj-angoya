@@ -1,0 +1,37 @@
+@require '~@/assets/style/variables.styl'
+
+centerChildContent() {
+  display inline-flex
+  align-items center
+  justify-content center
+}
+
+centerAbsContent() {
+  top 50%
+  left 50%
+  transform translate(-50%, -50%)
+}
+
+centerHorizontallyAbsContent() {
+  left 50%
+  transform translateX(-50%)
+}
+
+centerVerticallyAbsContent() {
+  top 50%
+  transform translateY(-50%)
+}
+
+textEllipsis() {
+  white-space nowrap
+  overflow hidden
+  text-overflow ellipsis
+}
+
+gridArts()
+  display grid
+  grid-template-columns repeat(auto-fill, minmax(280px, 1fr))
+  grid-gap 32px
+
+overflowYScroll()
+  overflow-y scroll
