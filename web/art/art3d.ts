@@ -12,7 +12,7 @@ export const Art3D = function () {
   const bgColor = new THREE.Color(0.8, 0.8, 0.688)
   scene.background = new THREE.Color(0.1, 0.1, 0.1)
 
-  const MAX_AGE = 12
+  const MAX_AGE = 13
   const currentAge = MAX_AGE
   const duration = 12.0
   const PADDING = 0.0
@@ -84,7 +84,7 @@ export const Art3D = function () {
     switch (note) {
       case 0: {
         if (currentArt !== 0) {
-          createTexture('img/2.jpeg')
+          createTexture('img/gundam.png')
         }
         break
       }

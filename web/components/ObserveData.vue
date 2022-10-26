@@ -54,13 +54,11 @@ export default class ObserveData extends Vue {
   }
 
   private get userId(): string {
-    // return this.$store.state.firebase.auth.id
     return 'xQDRooYuLcWoDPng7Hs4P9IsZi53'
   }
 
   private get currentPlaylistId(): string {
-    // return this.$store.state.playlist.currentPlaylistId
-    return 'angoya_vj_a184136aab841309c'
+    return 'AAAAAA_a18413a96ff8917a'
   }
 }
 </script>
