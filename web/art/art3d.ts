@@ -66,6 +66,12 @@ export const Art3D = function () {
     // // 放射色
     // emissive: { type: 'c', value: new THREE.Color(0x000000) },
   }
+
+  // @ts-ignore
+  this.setAnalyser = (_analyser: any) => {
+    analyser = _analyser
+  }
+
   // @ts-ignore
   this.updateTexture = (path: string) => {
     createTexture(path)
@@ -862,29 +868,7 @@ export const Art3D = function () {
 
   window.addEventListener('resize', onResize)
 
-  const initAudioInterface = async () => {
-    const audioCtx = new AudioContext()
-    analyser = audioCtx.createAnalyser()
-    let deviceId = `cbe8cb7e553c528305ac583d576b9feaa579437bde983a73704284d55c2e99c4`
-    deviceId =
-      '82223ad0b0eb2738589395f1afdd096721451a542fdaeee3136d03d110b447a4'
-    deviceId = ''
-    const devices = await navigator.mediaDevices.enumerateDevices()
-    console.log(devices)
-    for (let i = 0; i < devices.length; i++) {
-      if (devices[i].label.includes('Steinberg UR22mkII')) {
-        deviceId = devices[i].deviceId
-        break
-      }
-    }
-    const audio = deviceId ? { deviceId: { exact: deviceId } } : true
-    const stream = await navigator.mediaDevices.getUserMedia({ audio })
-    const source = audioCtx.createMediaStreamSource(stream)
-    source.connect(analyser)
-  }
-
-  const init = async () => {
-    await initAudioInterface()
+  const init = () => {
     initTiles()
     onResize()
     render()
