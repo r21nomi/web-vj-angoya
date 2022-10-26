@@ -25,8 +25,32 @@ export default {
   ],
   components: true,
   buildModules: ['@nuxt/typescript-build'],
-  modules: ['@nuxtjs/axios', '@nuxtjs/device', '@nuxtjs/toast'],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/device',
+    '@nuxtjs/toast',
+    '@nuxtjs/firebase',
+  ],
   axios: {},
+  firebase: {
+    config: {
+      apiKey: ENV_PRD.API_KEY,
+      authDomain: ENV_PRD.AUTH_DOMAIN,
+      projectId: ENV_PRD.PROJECT_ID,
+      storageBucket: ENV_PRD.STORAGE_BUCKET,
+      messagingSenderId: ENV_PRD.MESSAGING_SENDER_ID,
+      appId: ENV_PRD.APP_ID,
+      measurementId: ENV_PRD.MEASUREMENT_ID,
+    },
+    services: {
+      firestore: {
+        enablePersistence: false,
+      },
+      analytics: {
+        collectionEnabled: true,
+      },
+    },
+  },
   toast: {
     position: 'bottom-right',
     register: [

@@ -26,6 +26,15 @@ export default class ArtCanvas extends Vue {
     this.updateNoteNumber()
   }
 
+  @Watch('$store.state.asset.currentImageIndex')
+  private onCurrentImageIndexChanged(index: number) {
+    if (this.art) {
+      // indexは/imgの中の画像のファイル名を指すことを想定（ex. 1.jpg）
+      console.log(`do update!!!!!!!!!!: ${index}`)
+      this.art.updateTexture(`img/${index}.jpg`)
+    }
+  }
+
   mounted() {
     // this.art = new Art()
     this.art = new Art3D()

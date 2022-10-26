@@ -63,6 +63,10 @@ export const Art3D = function () {
     // // 放射色
     // emissive: { type: 'c', value: new THREE.Color(0x000000) },
   }
+  // @ts-ignore
+  this.updateTexture = (path: string) => {
+    createTexture(path)
+  }
 
   // @ts-ignore
   this.updateNoteNumber = (note: number, controls: MidiControls) => {
@@ -80,7 +84,7 @@ export const Art3D = function () {
     switch (note) {
       case 0: {
         if (currentArt !== 0) {
-          createTexture('img/gundam.png')
+          createTexture('img/2.jpeg')
         }
         break
       }

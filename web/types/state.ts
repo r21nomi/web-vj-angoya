@@ -8,3 +8,7 @@ export interface MidiControllerState {
   currentNoteNumber: number
   noteAndControls: Map<number, MidiControls>
 }
+
+export interface AssetState {
+  currentImageIndex: number
+}

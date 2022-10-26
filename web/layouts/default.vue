@@ -2,6 +2,7 @@
   <div>
     <Nuxt />
     <MidiController />
+    <ObserveData />
     <ConfigModal v-if="showConfigModal" />
   </div>
 </template>
@@ -10,11 +11,13 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import ConfigModal from '~/components/ConfigModal.vue'
 import MidiController from '~/components/MidiController.vue'
+import ObserveData from '~/components/ObserveData.vue'
 
 @Component({
   components: {
     ConfigModal,
     MidiController,
+    ObserveData,
   },
 })
 export default class extends Vue {
