@@ -1,8 +1,10 @@
 import { MidiControllerState } from '~/types/state'
 import { MidiControls } from '~/types/dto'
 
-const NOTE_NUM = parseInt(process.env.NOTE_NUM as string)
-const FIRST_NOTE_NUMBER = parseInt(process.env.FIRST_NOTE_NUMBER as string)
+export const NOTE_NUM = parseInt(process.env.NOTE_NUM as string)
+export const FIRST_NOTE_NUMBER = parseInt(
+  process.env.FIRST_NOTE_NUMBER as string
+)
 const CONTROL_NUM = parseInt(process.env.CONTROL_NUM as string)
 const FIRST_CONTROL_NUMBER = parseInt(
   process.env.FIRST_CONTROL_NUMBER as string
@@ -38,9 +40,11 @@ export const mutations = {
 
 export const actions = {
   setCurrentNoteNumber({ commit }, num: number) {
+    console.log(`num: ${num}`)
     commit('setCurrentNoteNumber', num - FIRST_NOTE_NUMBER)
   },
   setControl({ commit }, arg: { controlNumber: number; controlValue: number }) {
+    console.log(`num: ${arg.controlNumber}, val: ${arg.controlValue}`)
     const controlNumber = arg.controlNumber - FIRST_CONTROL_NUMBER
     commit('setCurrentControlNumber', controlNumber)
     commit('setControl', {

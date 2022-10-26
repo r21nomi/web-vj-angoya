@@ -5,6 +5,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { WebMidi } from 'webmidi'
+import { FIRST_NOTE_NUMBER, NOTE_NUM } from '~/store/midiController'
 
 @Component({
   components: {},
@@ -36,11 +37,20 @@ export default class MidiController extends Vue {
         )
       })
       myInput.addListener('controlchange', (e) => {
-        // 48 ~ 56
-        this.$store.dispatch('midiController/setControl', {
-          controlNumber: e.controller.number,
-          controlValue: e.value,
-        })
+        const number = e.controller.number
+        if (
+          number >= FIRST_NOTE_NUMBER &&
+          number <= FIRST_NOTE_NUMBER + NOTE_NUM
+        ) {
+          if (e.value === 1) {
+            this.$store.dispatch('midiController/setCurrentNoteNumber', number)
+          }
+        } else {
+          this.$store.dispatch('midiController/setControl', {
+            controlNumber: number,
+            controlValue: e.value,
+          })
+        }
       })
     }
 
