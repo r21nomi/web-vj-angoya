@@ -23,6 +23,7 @@ export const Art3D = function () {
   // Audio visual factor
   let baseFrame = 20
   let zOffset = 0
+  let colorR = 0
 
   let index: any = []
   let vertices: any = []
@@ -80,6 +81,7 @@ export const Art3D = function () {
     mesh.rotation.z = (getControlVal(4) * 360 * Math.PI) / 180
     cameraZOffset = (1 - getControlVal(5)) * 500
     zOffset = getControlVal(6) * 500
+    colorR = getControlVal(7)
 
     switch (note) {
       case 0: {
@@ -154,10 +156,15 @@ export const Art3D = function () {
       // }
       const index2 = 0
       const mmax = 155
-      uniforms.offset.value = dataArray[index2] / mmax
+      uniforms.offset.value = Math.pow(dataArray[index2] / mmax, 3)
       if (baseTile) {
         baseTile.updateZ((dataArray[index2] / mmax) * zOffset)
       }
+      scene.background = new THREE.Color(
+        colorR === 0 ? uniforms.offset.value : colorR,
+        uniforms.offset.value,
+        uniforms.offset.value
+      )
     }
 
     if (baseTile) {
