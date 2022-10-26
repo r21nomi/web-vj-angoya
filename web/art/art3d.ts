@@ -20,6 +20,8 @@ export const Art3D = function () {
   let analyser
   // let directionalLight
 
+  let baseFrame = 20
+
   let index: any = []
   let vertices: any = []
   let uvs: any = []
@@ -62,9 +64,10 @@ export const Art3D = function () {
 
   // @ts-ignore
   this.updateNoteNumber = (note: number, controls: MidiControls) => {
+    span = controls.controls.get(0) || 0
+    baseFrame = (1 - (controls.controls.get(1) || 0)) * 100
     switch (note) {
       case 0: {
-        span = controls.controls.get(0) || 0
         if (currentArt !== 0) {
           createTexture('img/gundam.png')
         }
@@ -348,7 +351,7 @@ export const Art3D = function () {
       this.impulse = 0
       this.updateCount = 0
       this.frame = 0
-      this.maxFrame = 200 + Math.floor(Math.random() * 100)
+      this.maxFrame = Math.floor(Math.random() * 100)
       this.easing = easings[1]
 
       if (this.age < currentAge) {
@@ -405,7 +408,8 @@ export const Art3D = function () {
           ratioDiff = 0
         }
         this.ratio = map(
-          this.easing(this.frame / this.maxFrame) * this.targetRatio,
+          this.easing(Math.min(this.frame / (baseFrame + this.maxFrame), 1)) *
+            this.targetRatio,
           0,
           this.targetRatio,
           this.lastRatio,
