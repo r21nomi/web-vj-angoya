@@ -20,7 +20,9 @@ export const Art3D = function () {
   let analyser
   // let directionalLight
 
+  // Audio visual factor
   let baseFrame = 20
+  let zOffset = 0
 
   let index: any = []
   let vertices: any = []
@@ -73,6 +75,7 @@ export const Art3D = function () {
     mesh.rotation.y = (getControlVal(3) * 360 * Math.PI) / 180
     mesh.rotation.z = (getControlVal(4) * 360 * Math.PI) / 180
     cameraZOffset = (1 - getControlVal(5)) * 500
+    zOffset = getControlVal(6) * 500
 
     switch (note) {
       case 0: {
@@ -148,6 +151,9 @@ export const Art3D = function () {
       const index2 = 0
       const mmax = 155
       uniforms.offset.value = dataArray[index2] / mmax
+      if (baseTile) {
+        baseTile.updateZ((dataArray[index2] / mmax) * zOffset)
+      }
     }
 
     if (baseTile) {
@@ -322,6 +328,7 @@ export const Art3D = function () {
     private y: number = 0
     private z: number = 0
     private originalZ = this.z
+    private additionalZ = 0
     private w: number = 0
     private h: number = 0
     private age: number = 0
@@ -391,6 +398,14 @@ export const Art3D = function () {
         const _ratio = ratio || null
         this.children[0].updateTarget(_ratio)
         this.children[1].updateTarget(_ratio)
+      }
+    }
+
+    updateZ(z) {
+      this.additionalZ = z
+      if (this.children.length > 0) {
+        this.children[0].updateZ(z)
+        this.children[1].updateZ(z)
       }
     }
 
@@ -479,8 +494,9 @@ export const Art3D = function () {
         }
       } else {
         // render
-        this.z =
-          this.originalZ * Math.min(this.easing(currentTime[0] / 1.2), 1.0)
+        // this.z =
+        //   this.originalZ * Math.min(this.easing(currentTime[0] / 1.2), 1.0)
+        this.z = this.originalZ + this.additionalZ
         this.draw(true)
       }
     }
