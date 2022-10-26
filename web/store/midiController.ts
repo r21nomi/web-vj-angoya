@@ -10,6 +10,7 @@ const FIRST_CONTROL_NUMBER = parseInt(
 
 export const state = (): MidiControllerState => ({
   currentNoteNumber: 0,
+  currentControlNumber: 0,
   noteAndControls: new Map(
     [...Array(NOTE_NUM)].map((_, index) => [index, getEmptyControls()])
   ),
@@ -18,6 +19,9 @@ export const state = (): MidiControllerState => ({
 export const mutations = {
   setCurrentNoteNumber(state: MidiControllerState, num: number) {
     state.currentNoteNumber = num
+  },
+  setCurrentControlNumber(state: MidiControllerState, num: number) {
+    state.currentControlNumber = num
   },
   setControl(
     state: MidiControllerState,
@@ -37,8 +41,10 @@ export const actions = {
     commit('setCurrentNoteNumber', num - FIRST_NOTE_NUMBER)
   },
   setControl({ commit }, arg: { controlNumber: number; controlValue: number }) {
+    const controlNumber = arg.controlNumber - FIRST_CONTROL_NUMBER
+    commit('setCurrentControlNumber', controlNumber)
     commit('setControl', {
-      controlNumber: arg.controlNumber - FIRST_CONTROL_NUMBER,
+      controlNumber,
       controlValue: arg.controlValue,
     })
   },

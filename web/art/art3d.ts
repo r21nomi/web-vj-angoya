@@ -70,18 +70,52 @@ export const Art3D = function () {
   }
 
   // @ts-ignore
-  this.updateNoteNumber = (note: number, controls: MidiControls) => {
+  this.updateNoteNumber = (
+    note: number,
+    currentControlNumber: number,
+    controls: MidiControls
+  ) => {
     const getControlVal = (index: number) => {
       return controls.controls.get(index) || 0
     }
-    span = getControlVal(0)
-    baseFrame = (1 - getControlVal(1)) * 100
-    mesh.rotation.x = (getControlVal(2) * 360 * Math.PI) / 180
-    mesh.rotation.y = (getControlVal(3) * 360 * Math.PI) / 180
-    mesh.rotation.z = (getControlVal(4) * 360 * Math.PI) / 180
-    cameraZOffset = (1 - getControlVal(5)) * 500
-    zOffset = getControlVal(6) * 500
-    colorR = getControlVal(7)
+
+    switch (currentControlNumber) {
+      case 0: {
+        span = getControlVal(currentControlNumber)
+        break
+      }
+      case 1: {
+        baseFrame = (1 - getControlVal(currentControlNumber)) * 100
+        break
+      }
+      case 2: {
+        mesh.rotation.x =
+          (getControlVal(currentControlNumber) * 360 * Math.PI) / 180
+        break
+      }
+      case 3: {
+        mesh.rotation.y =
+          (getControlVal(currentControlNumber) * 360 * Math.PI) / 180
+        break
+      }
+      case 4: {
+        mesh.rotation.z =
+          (getControlVal(currentControlNumber) * 360 * Math.PI) / 180
+        break
+      }
+      case 5: {
+        cameraZOffset = (1 - getControlVal(currentControlNumber)) * 500
+        break
+      }
+      case 6: {
+        zOffset = getControlVal(currentControlNumber) * 500
+        break
+      }
+      case 7: {
+        colorR = getControlVal(currentControlNumber)
+        break
+      }
+    }
 
     switch (note) {
       case 0: {

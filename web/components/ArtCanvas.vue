@@ -42,12 +42,20 @@ export default class ArtCanvas extends Vue {
 
   private updateNoteNumber() {
     if (this.art) {
-      this.art.updateNoteNumber(this.currentNote, this.controls)
+      this.art.updateNoteNumber(
+        this.currentNote,
+        this.currentControlNumber,
+        this.controls
+      )
     }
   }
 
   private get currentNote(): number {
     return this.$store.state.midiController.currentNoteNumber
+  }
+
+  private get currentControlNumber(): number {
+    return this.$store.state.midiController.currentControlNumber
   }
 
   private get controls(): MidiControls {

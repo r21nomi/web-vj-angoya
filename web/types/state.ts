@@ -6,6 +6,7 @@ export interface ConfigModalState {
 
 export interface MidiControllerState {
   currentNoteNumber: number
+  currentControlNumber: number
   noteAndControls: Map<number, MidiControls>
 }
 
