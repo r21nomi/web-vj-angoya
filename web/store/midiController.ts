@@ -40,12 +40,13 @@ export const mutations = {
 
 export const actions = {
   setCurrentNoteNumber({ commit }, num: number) {
-    console.log(`num: ${num}`)
-    commit('setCurrentNoteNumber', num - FIRST_NOTE_NUMBER)
+    const _number = num - FIRST_NOTE_NUMBER
+    console.log(`num: ${_number}`)
+    commit('setCurrentNoteNumber', _number)
   },
   setControl({ commit }, arg: { controlNumber: number; controlValue: number }) {
-    console.log(`num: ${arg.controlNumber}, val: ${arg.controlValue}`)
     const controlNumber = arg.controlNumber - FIRST_CONTROL_NUMBER
+    console.log(`num: ${controlNumber}, val: ${arg.controlValue}`)
     commit('setCurrentControlNumber', controlNumber)
     commit('setControl', {
       controlNumber,

@@ -24,6 +24,8 @@ export const Art3D = function () {
   let baseFrame = 20
   let zOffset = 0
   let colorR = 0
+  let colorG = 0
+  let colorB = 0
 
   let index: any = []
   let vertices: any = []
@@ -111,8 +113,16 @@ export const Art3D = function () {
         zOffset = getControlVal(currentControlNumber) * 500
         break
       }
-      case 7: {
+      case 21: {
         colorR = getControlVal(currentControlNumber)
+        break
+      }
+      case 22: {
+        colorG = getControlVal(currentControlNumber)
+        break
+      }
+      case 23: {
+        colorB = getControlVal(currentControlNumber)
         break
       }
     }
@@ -196,8 +206,8 @@ export const Art3D = function () {
       }
       scene.background = new THREE.Color(
         colorR === 0 ? uniforms.offset.value : colorR,
-        uniforms.offset.value,
-        uniforms.offset.value
+        colorG === 0 ? uniforms.offset.value : colorG,
+        colorB === 0 ? uniforms.offset.value : colorB
       )
     }
 
