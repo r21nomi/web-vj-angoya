@@ -64,8 +64,15 @@ export const Art3D = function () {
 
   // @ts-ignore
   this.updateNoteNumber = (note: number, controls: MidiControls) => {
-    span = controls.controls.get(0) || 0
-    baseFrame = (1 - (controls.controls.get(1) || 0)) * 100
+    const getControlVal = (index: number) => {
+      return controls.controls.get(index) || 0
+    }
+    span = getControlVal(0)
+    baseFrame = (1 - getControlVal(1)) * 100
+    mesh.rotation.x = (getControlVal(2) * 360 * Math.PI) / 180
+    mesh.rotation.y = (getControlVal(3) * 360 * Math.PI) / 180
+    mesh.rotation.z = (getControlVal(4) * 360 * Math.PI) / 180
+
     switch (note) {
       case 0: {
         if (currentArt !== 0) {
@@ -227,8 +234,6 @@ export const Art3D = function () {
     })
 
     mesh = new THREE.Mesh(geometry, material)
-    mesh.rotateX((-30 * Math.PI) / 180)
-    mesh.rotateZ((-30 * Math.PI) / 180)
     scene.add(mesh)
   }
 
