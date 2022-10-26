@@ -1,5 +1,8 @@
 <template>
-  <canvas id="canvas" class="artCanvas"></canvas>
+  <div>
+    <div v-if="isP5" id="canvasContainer" class="artCanvas"></div>
+    <canvas v-else id="canvas" class="artCanvas"></canvas>
+  </div>
 </template>
 
 <script lang="ts">
@@ -7,6 +10,7 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator'
 // import { Art } from '~/art/art'
 import { MidiControls } from '~/types/dto'
 import { Art3D } from '~/art/art3d'
+import { ArtP5 } from '~/art/artP5js'
 
 @Component({
   components: {},
@@ -14,6 +18,7 @@ import { Art3D } from '~/art/art3d'
 export default class ArtCanvas extends Vue {
   private art: any = null
   private analyser: any = null
+  private isP5: boolean = false
 
   @Watch('$store.state.midiController.currentNoteNumber')
   private onCurrentNoteNumberChanged() {
@@ -32,13 +37,22 @@ export default class ArtCanvas extends Vue {
     if (this.art) {
       // indexは/imgの中の画像のファイル名を指すことを想定（ex. 1.jpg）
       console.log(`do update!!!!!!!!!!: ${index}`)
-      this.art.updateTexture(`img/${index}.jpg`)
+      if (this.isP5) {
+        this.art.create(`img/${index}.jpg`)
+      } else {
+        this.art.updateTexture(`img/${index}.jpg`)
+      }
     }
   }
 
   mounted() {
     // this.art = new Art()
-    this.art = new Art3D()
+    if (this.isP5) {
+      this.art = new ArtP5('canvasContainer')
+      this.art.create()
+    } else {
+      this.art = new Art3D()
+    }
     this.initAudioInterface()
   }
 

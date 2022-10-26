@@ -1,7 +1,7 @@
 import { AssetState } from '~/types/state'
 
 export const state = (): AssetState => ({
-  currentImageIndex: 1,
+  currentImageIndex: 0,
 })
 
 export const mutations = {

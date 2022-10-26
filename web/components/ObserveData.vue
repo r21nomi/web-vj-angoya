@@ -49,8 +49,10 @@ export default class ObserveData extends Vue {
     //   arts.push(art)
     // })
     console.log(query.size)
-    // firestoreにアップロードされたファイル数を渡す
-    this.$store.dispatch('asset/setCurrentImageIndex', query.size)
+    if (query.size > 0) {
+      // firestoreにアップロードされたファイル数を渡す
+      this.$store.dispatch('asset/setCurrentImageIndex', query.size)
+    }
   }
 
   private get userId(): string {
