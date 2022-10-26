@@ -222,7 +222,11 @@ export const Art3D = function () {
     }
 
     if (mesh) {
-      mesh.rotateZ(((360 * Math.PI) / 180 / (duration / span)) * 0.5)
+      if (span === 0) {
+        mesh.rotation.z = 0
+      } else {
+        mesh.rotateZ(((360 * Math.PI) / 180 / (duration / span)) * 0.5)
+      }
     }
 
     const z = stageHeight / Math.tan((fov * Math.PI) / 360) / 2
