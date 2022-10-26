@@ -13,6 +13,7 @@ attribute vec3 color;
 attribute float direction;
 attribute float ratio;
 attribute vec2 weight;
+attribute vec3 normal;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
@@ -20,6 +21,7 @@ uniform float time;
 uniform float uWidth;
 uniform float uHeight;
 uniform float duration;
+uniform mat3 normalMatrix;
 
 varying float vIndex;
 varying float vTotalIndex;
@@ -29,18 +31,22 @@ varying vec2 vResolution;
 varying float vDirection;
 varying float vRatio;
 varying vec2 vWeight;
+varying vec3 vViewPosition;
+varying vec3 vNormal;
 
 void main() {
-    vIndex = index;
-    vTotalIndex = totalIndex;
-    vUv = uv;
-    vColor = color;
-    // Actual resolution of rect by vertex with padding.
-    vResolution = vec2(size.x - padding.x, size.y - padding.y);
-    vDirection = direction;
-    vRatio = ratio;
-    vWeight = weight;
+  vIndex = index;
+  vTotalIndex = totalIndex;
+  vUv = uv;
+  vColor = color;
+  // Actual resolution of rect by vertex with padding.
+  vResolution = vec2(size.x - padding.x, size.y - padding.y);
+  vDirection = direction;
+  vRatio = ratio;
+  vWeight = weight;
+//  vNormal = normalMatrix * normal;
 
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_Position = projectionMatrix * mvPosition;
+  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+//  vViewPosition = mvPosition.xyz;
+  gl_Position = projectionMatrix * mvPosition;
 }

@@ -17,6 +17,8 @@ export const Art3D = function () {
   const duration = 12.0
   const PADDING = 0.0
   let geometry, mesh, material
+  let analyser
+  // let directionalLight
 
   let index: any = []
   let vertices: any = []
@@ -50,6 +52,12 @@ export const Art3D = function () {
       type: 'v3',
       value: new THREE.Vector3(bgColor.r, bgColor.g, bgColor.b),
     },
+    offset: { type: 'f', value: 1.0 },
+    // 拡散色
+    // diffuse: { type: 'c', value: new THREE.Color(0xffffff) },
+    //
+    // // 放射色
+    // emissive: { type: 'c', value: new THREE.Color(0x000000) },
   }
 
   // @ts-ignore
@@ -88,6 +96,19 @@ export const Art3D = function () {
   const z = stageHeight / Math.tan((fov * Math.PI) / 360) / 2
   camera.position.z = z
 
+  // const directionalLight = new THREE.DirectionalLight('#ffffff')
+  // directionalLight.position.set(0, 80, 0)
+  // directionalLight.intensity = 10
+  // scene.add(directionalLight)
+  //
+  // const pointLight = new THREE.PointLight(0xffffff, 1, 5, 1)
+  // pointLight.position.set(0, 0, 2.5)
+  // scene.add(pointLight)
+  //
+  // // ヘルパー
+  // const pointLightHelper = new THREE.PointLightHelper(pointLight, 1)
+  // scene.add(pointLightHelper)
+
   const renderer = new THREE.WebGLRenderer()
   document.body.appendChild(renderer.domElement)
 
@@ -100,6 +121,23 @@ export const Art3D = function () {
     currentTime[0] = clock.elapsedTime
 
     uniforms.time.value = clock.elapsedTime
+
+    if (analyser) {
+      analyser.fftSize = 2048
+      const bufferLength = analyser.frequencyBinCount
+      const dataArray = new Uint8Array(bufferLength)
+      analyser.getByteFrequencyData(dataArray)
+      // for (let i = 0; i < bufferLength; i++) {
+      //   const barHeight = dataArray[i]
+      //
+      //   const r = barHeight + 25 * (i / bufferLength)
+      //   const g = 250 * (i / bufferLength)
+      //   const b = 50
+      // }
+      const index2 = 0
+      const mmax = 155
+      uniforms.offset.value = dataArray[index2] / mmax
+    }
 
     if (baseTile) {
       baseTile.update()
@@ -173,6 +211,7 @@ export const Art3D = function () {
 
     material = new THREE.RawShaderMaterial({
       uniforms,
+      // uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.lights, uniforms]),
       vertexShader,
       fragmentShader,
       transparent: true,
@@ -181,11 +220,12 @@ export const Art3D = function () {
       wireframe: false,
       side: THREE.DoubleSide,
       glslVersion: THREE.GLSL1,
+      // lights: false,
     })
 
     mesh = new THREE.Mesh(geometry, material)
-    // mesh.rotateX((-30 * Math.PI) / 180)
-    // mesh.rotateZ((-30 * Math.PI) / 180)
+    mesh.rotateX((-30 * Math.PI) / 180)
+    mesh.rotateZ((-30 * Math.PI) / 180)
     scene.add(mesh)
   }
 
@@ -364,14 +404,14 @@ export const Art3D = function () {
         if (ratioDiff < 0.005) {
           ratioDiff = 0
         }
-        // this.ratio = map(
-        //   this.easing(this.frame / this.maxFrame) * this.targetRatio,
-        //   0,
-        //   this.targetRatio,
-        //   this.lastRatio,
-        //   this.targetRatio
-        // );
-        // this.ratio = Math.max(Math.min(this.ratio, 1.0), 0.0);
+        this.ratio = map(
+          this.easing(this.frame / this.maxFrame) * this.targetRatio,
+          0,
+          this.targetRatio,
+          this.lastRatio,
+          this.targetRatio
+        )
+        this.ratio = Math.max(Math.min(this.ratio, 1.0), 0.0)
         this.frame++
 
         if (this.age % 2 === 0) {
@@ -737,7 +777,39 @@ export const Art3D = function () {
 
   window.addEventListener('resize', onResize)
 
-  initTiles()
-  onResize()
-  render()
+  const initAudioInterface = async () => {
+    const audioCtx = new AudioContext()
+    analyser = audioCtx.createAnalyser()
+    let deviceId = `cbe8cb7e553c528305ac583d576b9feaa579437bde983a73704284d55c2e99c4`
+    deviceId =
+      '82223ad0b0eb2738589395f1afdd096721451a542fdaeee3136d03d110b447a4'
+    deviceId = ''
+    const devices = await navigator.mediaDevices.enumerateDevices()
+    console.log(devices)
+    for (let i = 0; i < devices.length; i++) {
+      if (devices[i].label.includes('Steinberg UR22mkII')) {
+        deviceId = devices[i].deviceId
+        break
+      }
+    }
+    const audio = deviceId ? { deviceId: { exact: deviceId } } : true
+    const stream = await navigator.mediaDevices.getUserMedia({ audio })
+    const source = audioCtx.createMediaStreamSource(stream)
+    source.connect(analyser)
+  }
+
+  const init = async () => {
+    await initAudioInterface()
+    initTiles()
+    onResize()
+    render()
+  }
+
+  let isInitialized = false
+  window.addEventListener('click', () => {
+    if (!isInitialized) {
+      init()
+      isInitialized = true
+    }
+  })
 }
