@@ -72,6 +72,7 @@ export const Art3D = function () {
     mesh.rotation.x = (getControlVal(2) * 360 * Math.PI) / 180
     mesh.rotation.y = (getControlVal(3) * 360 * Math.PI) / 180
     mesh.rotation.z = (getControlVal(4) * 360 * Math.PI) / 180
+    cameraZOffset = (1 - getControlVal(5)) * 500
 
     switch (note) {
       case 0: {
