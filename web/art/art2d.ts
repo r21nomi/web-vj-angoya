@@ -17,7 +17,7 @@ export const Art2D = function () {
   const currentAge = MAX_AGE
   // const duration = 12.0
   const PADDING = 0.0
-  let geometry, mesh
+  let geometry, mesh, material, texture
   let analyser
   let currentArt = 0
 
@@ -44,6 +44,8 @@ export const Art2D = function () {
   let baseTile
   let totalRenderCount = 0
   let lastUpdatedTime = 0
+
+  let frameID
 
   // For dev
   const currentTime = [0]
@@ -147,6 +149,15 @@ export const Art2D = function () {
     console.log(currentArt)
   }
 
+  // @ts-ignore
+  this.dispose = () => {
+    scene.remove(mesh)
+    mesh.material.dispose()
+    mesh.geometry.dispose()
+    texture.dispose()
+    cancelAnimationFrame(frameID)
+  }
+
   const map = (value, beforeMin, beforeMax, afterMin, afterMax) => {
     return (
       afterMin +
@@ -210,7 +221,7 @@ export const Art2D = function () {
     camera.lookAt(new THREE.Vector3(0, 0, 0))
     renderer.render(scene, camera)
 
-    requestAnimationFrame(render)
+    frameID = requestAnimationFrame(render)
   }
 
   const onResize = () => {
@@ -265,7 +276,7 @@ export const Art2D = function () {
       new THREE.Float32BufferAttribute(weights, 2)
     )
 
-    const material = new THREE.RawShaderMaterial({
+    material = new THREE.RawShaderMaterial({
       uniforms,
       vertexShader,
       fragmentShader,
@@ -336,7 +347,10 @@ export const Art2D = function () {
       ctx.fillText(_originalText[i], x, y)
     }
 
-    const texture: any = new THREE.Texture(canvas)
+    if (texture) {
+      texture.dispose()
+    }
+    texture = new THREE.Texture(canvas)
     texture.needsUpdate = true
 
     uniforms.textureResolution.value = new THREE.Vector2(

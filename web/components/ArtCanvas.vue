@@ -1,7 +1,6 @@
 <template>
   <div>
     <div v-if="isP5" id="canvasContainer" class="artCanvas"></div>
-    <canvas v-else id="canvas" class="artCanvas"></canvas>
   </div>
 </template>
 
@@ -22,8 +21,21 @@ export default class ArtCanvas extends Vue {
   private isP5: boolean = false
 
   @Watch('$store.state.midiController.currentNoteNumber')
-  private onCurrentNoteNumberChanged() {
-    if (this.art) {
+  private onCurrentNoteNumberChanged(num: number) {
+    if (num >= 11 && num <= 12) {
+      // Change art
+      const canvas = document.querySelector('canvas')
+      if (canvas) {
+        this.art.dispose()
+        canvas.remove()
+
+        if (num === 11) {
+          this.art = new Art2D()
+        } else if (num === 12) {
+          this.art = new Art3D()
+        }
+      }
+    } else if (this.art) {
       this.updateNoteNumber()
     }
   }

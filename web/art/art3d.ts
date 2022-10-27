@@ -45,6 +45,8 @@ export const Art3D = function () {
 
   let currentArt = 0
 
+  let frameID
+
   // For dev
   const currentTime = [0]
   let span = 0.01
@@ -150,6 +152,14 @@ export const Art3D = function () {
     currentArt = note
   }
 
+  // @ts-ignore
+  this.dispose = () => {
+    scene.remove(mesh)
+    mesh.material.dispose()
+    mesh.geometry.dispose()
+    cancelAnimationFrame(frameID)
+  }
+
   const map = (value, beforeMin, beforeMax, afterMin, afterMax) => {
     return (
       afterMin +
@@ -240,7 +250,7 @@ export const Art3D = function () {
 
     renderer.render(scene, camera)
 
-    requestAnimationFrame(render)
+    frameID = requestAnimationFrame(render)
   }
 
   const onResize = () => {
@@ -874,11 +884,12 @@ export const Art3D = function () {
     render()
   }
 
-  let isInitialized = false
-  window.addEventListener('click', () => {
-    if (!isInitialized) {
-      init()
-      isInitialized = true
-    }
-  })
+  // let isInitialized = false
+  // window.addEventListener('click', () => {
+  //   if (!isInitialized) {
+  //     init()
+  //     isInitialized = true
+  //   }
+  // })
+  init()
 }
