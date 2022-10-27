@@ -10,6 +10,7 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator'
 // import { Art } from '~/art/art'
 import { MidiControls } from '~/types/dto'
 import { Art3D } from '~/art/art3d'
+import { Art2D } from '~/art/art2d'
 import { ArtP5 } from '~/art/artP5js'
 
 @Component({
@@ -51,7 +52,8 @@ export default class ArtCanvas extends Vue {
       this.art = new ArtP5('canvasContainer')
       this.art.create()
     } else {
-      this.art = new Art3D()
+      // this.art = new Art3D()
+      this.art = new Art2D()
     }
     this.initAudioInterface()
   }
