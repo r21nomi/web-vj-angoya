@@ -34,6 +34,7 @@ export default class ArtCanvas extends Vue {
         } else if (num === 12) {
           this.art = new Art3D()
         }
+        this.art.setAnalyser(this.analyser)
       }
     } else if (this.art) {
       this.updateNoteNumber()

@@ -154,6 +154,7 @@ export const Art3D = function () {
 
   // @ts-ignore
   this.dispose = () => {
+    scene.clear()
     scene.remove(mesh)
     mesh.material.dispose()
     mesh.geometry.dispose()
