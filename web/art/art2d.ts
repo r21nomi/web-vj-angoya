@@ -63,6 +63,10 @@ export const Art2D = function () {
       type: 'v3',
       value: new THREE.Vector3(bgColor.r, bgColor.g, bgColor.b),
     },
+    isDetail: {
+      type: 'f',
+      value: 1.0,
+    },
   }
 
   // @ts-ignore
@@ -130,11 +134,12 @@ export const Art2D = function () {
         break
       }
     }
-    //
+
     switch (note) {
       case 0: {
         if (currentArt !== 0) {
-          createTextTexture(1, '🐙', new THREE.Color(0.0, 0.0, 1.0))
+          createImageTexture(`1_automatic.jpg`)
+          // createTextTexture(1, '🐙', new THREE.Color(0.0, 0.0, 1.0))
         }
         break
       }
@@ -144,9 +149,18 @@ export const Art2D = function () {
         }
         break
       }
+      case 9: {
+        uniforms.isDetail.value = 0.0
+        console.log(`uniforms.isDetail.value: ${uniforms.isDetail.value}`)
+        break
+      }
+      case 13: {
+        uniforms.isDetail.value = 1.0
+        console.log(`uniforms.isDetail.value: ${uniforms.isDetail.value}`)
+        break
+      }
     }
     currentArt = note
-    console.log(currentArt)
   }
 
   // @ts-ignore
@@ -316,6 +330,16 @@ export const Art2D = function () {
     )
 
     addTilesToScene()
+  }
+
+  const createImageTexture = (fileName) => {
+    new THREE.TextureLoader().load(`img/setlist/${fileName}`, (texture) => {
+      uniforms.texture.value = texture as any
+      uniforms.textureResolution.value = new THREE.Vector2(
+        texture.image.width,
+        texture.image.height
+      )
+    })
   }
 
   const createTextTexture = (type = 1, originalText = '', _bgColor) => {

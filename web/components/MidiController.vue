@@ -45,7 +45,7 @@ export default class MidiController extends Vue {
           if (e.value === 1) {
             this.$store.dispatch('midiController/setCurrentNoteNumber', number)
           }
-        } else if (number >= 43 && number <= 44) {
+        } else if (number >= 43 && number <= 45) {
           if (e.value === 1) {
             this.$store.dispatch('midiController/setCurrentNoteNumber', number)
           }
