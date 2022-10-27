@@ -75,8 +75,8 @@ export const Art2D = function () {
   }
 
   // @ts-ignore
-  this.updateTexture = (_path: string) => {
-    // createTexture(path)
+  this.updateTexture = (path: string) => {
+    createImageTexture(path)
   }
 
   // @ts-ignore
@@ -138,7 +138,7 @@ export const Art2D = function () {
     switch (note) {
       case 0: {
         if (currentArt !== 0) {
-          createImageTexture(`1_automatic.jpg`)
+          createImageTexture(`img/setlist/1_automatic.jpg`)
           // createTextTexture(1, '🐙', new THREE.Color(0.0, 0.0, 1.0))
         }
         break
@@ -333,7 +333,7 @@ export const Art2D = function () {
   }
 
   const createImageTexture = (fileName) => {
-    new THREE.TextureLoader().load(`img/setlist/${fileName}`, (texture) => {
+    new THREE.TextureLoader().load(`${fileName}`, (texture) => {
       uniforms.texture.value = texture as any
       uniforms.textureResolution.value = new THREE.Vector2(
         texture.image.width,
