@@ -13,3 +13,8 @@ export enum Color {
   WHITE = 'white',
   YELLOW = 'yellow',
 }
+
+export enum ArtType {
+  THREE_D_TILE = 1,
+  CAVE = 2,
+}

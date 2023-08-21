@@ -103,5 +103,5 @@ void main() {
   vec3 color = vColor;
   //  color = mix(vec3(1.0), color, length(uv));
 //  gl_FragColor = vec4(color * outgoingLight, diffuseColor.a);
-  gl_FragColor = vec4(color, offset);
+  gl_FragColor = vec4(color + offset * 3.0, max(0.3, offset));
 }

@@ -2,7 +2,7 @@
   <div>
     <Nuxt />
     <MidiController />
-    <ObserveData />
+    <!--    <ObserveData />-->
     <ConfigModal v-if="showConfigModal" />
   </div>
 </template>

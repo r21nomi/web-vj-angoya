@@ -7,9 +7,8 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
 // import { Art } from '~/art/art'
-import { MidiControls } from '~/types/dto'
+import { ArtType, MidiControls } from '~/types/dto'
 import { Art3D } from '~/art/art3d'
-import { Art2D } from '~/art/art2d'
 import { ArtP5 } from '~/art/artP5js'
 
 @Component({
@@ -22,17 +21,17 @@ export default class ArtCanvas extends Vue {
 
   @Watch('$store.state.midiController.currentNoteNumber')
   private onCurrentNoteNumberChanged(num: number) {
-    if (num >= 11 && num <= 12) {
+    if (num >= 0 && num <= 1) {
       // Change art
       const canvas = document.querySelector('canvas')
       if (canvas) {
         this.art.dispose()
         canvas.remove()
 
-        if (num === 11) {
-          this.art = new Art2D()
-        } else if (num === 12) {
-          this.art = new Art3D()
+        if (num === 0) {
+          this.art = new Art3D(ArtType.THREE_D_TILE)
+        } else if (num === 1) {
+          this.art = new Art3D(ArtType.CAVE)
         }
         this.art.setAnalyser(this.analyser)
       }
@@ -65,10 +64,23 @@ export default class ArtCanvas extends Vue {
       this.art = new ArtP5('canvasContainer')
       this.art.create()
     } else {
-      // this.art = new Art3D()
-      this.art = new Art2D()
+      this.art = new Art3D()
+      // this.art = new Art2D()
     }
-    this.initAudioInterface()
+    // this.initAudioInterface()
+
+    document.addEventListener('keyup', this.keyListener)
+  }
+
+  beforeDestroyed() {
+    document.removeEventListener('keyup', this.keyListener)
+  }
+
+  private keyListener(event) {
+    const keyName = event.key
+    if (keyName === ' ') {
+      this.initAudioInterface()
+    }
   }
 
   private updateNoteNumber() {

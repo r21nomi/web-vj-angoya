@@ -1,23 +1,27 @@
 import * as THREE from 'three'
-import OrbitControls from 'three-orbitcontrols'
+// import OrbitControls from 'three-orbitcontrols'
 // @ts-ignore
 import vertexShader from '~/art/shader/art3d/vertexShader.vert'
 // @ts-ignore
-import fragmentShader from '~/art/shader/art3d/fragmentShader.frag'
-import { MidiControls } from '~/types/dto'
+import tileFragmentShader from '~/art/shader/art3d/fragmentShader.frag'
+// @ts-ignore
+import caveFragmentShader from '~/art/shader/caveFragmentShader.frag'
+import { ArtType, MidiControls } from '~/types/dto'
 
-export const Art3D = function () {
+export const Art3D = function (_artType: ArtType = ArtType.THREE_D_TILE) {
   const clock = new THREE.Clock()
   const scene = new THREE.Scene()
   const bgColor = new THREE.Color(0.8, 0.8, 0.688)
   scene.background = new THREE.Color(0.1, 0.1, 0.1)
+  const artType: ArtType = _artType
 
-  const MAX_AGE = 13
-  const currentAge = MAX_AGE
+  let currentAge = 13
   const duration = 12.0
   const PADDING = 0.0
   let geometry, mesh, material
   let analyser
+  let fragmentShader
+  let texture
   // let directionalLight
 
   // Audio visual factor
@@ -42,8 +46,6 @@ export const Art3D = function () {
   let baseTile
   let totalRenderCount = 0
   let lastUpdatedTime = 0
-
-  let currentArt = 0
 
   let frameID
 
@@ -81,7 +83,7 @@ export const Art3D = function () {
 
   // @ts-ignore
   this.updateNoteNumber = (
-    note: number,
+    _note: number,
     currentControlNumber: number,
     controls: MidiControls
   ) => {
@@ -118,47 +120,62 @@ export const Art3D = function () {
         break
       }
       case 6: {
-        zOffset = getControlVal(currentControlNumber) * 500
+        zOffset = getControlVal(currentControlNumber) * 2
         break
       }
-      case 21: {
+      case 7: {
         colorR = getControlVal(currentControlNumber)
         break
       }
-      case 22: {
+      case 8: {
         colorG = getControlVal(currentControlNumber)
         break
       }
-      case 23: {
+      case 9: {
         colorB = getControlVal(currentControlNumber)
         break
       }
     }
 
-    switch (note) {
-      case 0: {
-        if (currentArt !== 0) {
-          createTexture('img/gundam.png')
-        }
-        break
-      }
-      case 1: {
-        if (currentArt !== 1) {
-          createTexture('img/flower4.png')
-        }
-        break
-      }
-    }
-    currentArt = note
+    // switch (note) {
+    //   case 0: {
+    //     artType = ArtType.THREE_D_TILE
+    //     init()
+    //     break
+    //   }
+    //   case 1: {
+    //     artType = ArtType.CAVE
+    //     init()
+    //     break
+    //   }
+    //   case 32: {
+    //     if (currentArt !== 0) {
+    //       createTexture('img/ayanami.jpeg')
+    //     }
+    //     break
+    //   }
+    //   case 33: {
+    //     if (currentArt !== 1) {
+    //       createTexture('img/flower4.png')
+    //     }
+    //     break
+    //   }
+    // }
+    // currentArt = note
   }
 
   // @ts-ignore
   this.dispose = () => {
     scene.clear()
     scene.remove(mesh)
+    renderer.dispose()
+    if (texture) {
+      texture.dispose()
+    }
     mesh.material.dispose()
     mesh.geometry.dispose()
     cancelAnimationFrame(frameID)
+    window.removeEventListener('resize', onResize)
   }
 
   const map = (value, beforeMin, beforeMax, afterMin, afterMax) => {
@@ -193,8 +210,7 @@ export const Art3D = function () {
   const renderer = new THREE.WebGLRenderer()
   document.body.appendChild(renderer.domElement)
 
-  const controls = new OrbitControls(camera, renderer.domElement)
-  console.log(controls)
+  // const controls = new OrbitControls(camera, renderer.domElement)
 
   const render = () => {
     clock.getDelta()
@@ -232,7 +248,7 @@ export const Art3D = function () {
       baseTile.update()
 
       const sec = Math.floor(currentTime[0])
-      if (sec === 0 || (sec !== lastUpdatedTime && sec % 8 === 0)) {
+      if (sec === 0 || (sec !== lastUpdatedTime && sec % 2 === 0)) {
         baseTile.updateTarget(0.5)
         lastUpdatedTime = sec
       }
@@ -353,7 +369,8 @@ export const Art3D = function () {
   }
 
   const createTexture = (texturePath: string) => {
-    new THREE.TextureLoader().load(texturePath, (texture) => {
+    new THREE.TextureLoader().load(texturePath, (_texture) => {
+      texture = _texture
       ;(uniforms.texture as any).value = texture
       uniforms.textureResolution.value = new THREE.Vector2(
         texture.image.width,
@@ -572,7 +589,7 @@ export const Art3D = function () {
         // render
         // this.z =
         //   this.originalZ * Math.min(this.easing(currentTime[0] / 1.2), 1.0)
-        this.z = this.originalZ + this.additionalZ
+        this.z = this.originalZ * this.additionalZ
         this.draw(true)
       }
     }
@@ -675,6 +692,29 @@ export const Art3D = function () {
       if (shouldUpdate) {
         // Update
         const screenPos = this.getScreenPosition()
+        const screenPos2 = this.getScreenPosition2()
+
+        const c =
+          Math.floor(textureImageSize.h - screenPos2.y) * textureImageSize.w +
+          Math.floor(screenPos2.x)
+        const ca = colorArray[c]
+        let color = {
+          r: 0,
+          g: 0,
+          b: 0,
+        }
+        let shouldAnimate = true
+        if (ca) {
+          color = {
+            r: ca.r / 255,
+            g: ca.g / 255,
+            b: ca.b / 255,
+          }
+          const grayColor = (color.r + color.g + color.b) / 3
+          if (grayColor < 0.4) {
+            shouldAnimate = false
+          }
+        }
 
         for (let k = 0; k < 6; k++) {
           for (let j = 0; j < 4; j++) {
@@ -682,7 +722,7 @@ export const Art3D = function () {
 
             const position = geometry.attributes.position
             const { x, y, z, w, h } = this.getPositionAndSize(k, j)
-            position.setXYZ(targetIndex, x, y, z)
+            position.setXYZ(targetIndex, x, y, shouldAnimate ? z : 0)
             position.needsUpdate = true
 
             const size = geometry.attributes.size
@@ -880,9 +920,15 @@ export const Art3D = function () {
   window.addEventListener('resize', onResize)
 
   const init = () => {
+    switch (artType) {
+      case ArtType.THREE_D_TILE:
+        fragmentShader = tileFragmentShader
+        break
+      case ArtType.CAVE:
+        fragmentShader = caveFragmentShader
+        currentAge = 0
+    }
     initTiles()
-    onResize()
-    render()
   }
 
   // let isInitialized = false
@@ -893,4 +939,6 @@ export const Art3D = function () {
   //   }
   // })
   init()
+  onResize()
+  render()
 }
